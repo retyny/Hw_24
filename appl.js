@@ -1,51 +1,16 @@
 
 
-const renderDataUsers = (data) => {
-    data.map((value, index) => {
-        const content = document.getElementById('cards');
-        const newCard = document.createElement('div');
-        newCard.className = 'card';
-        newCard.innerHTML =`
-        <h3 class="card-${index}">${value.id}</h3>
-        <h3 class="card-${index}">${value.name}</h3>
-        <h3 class="card-${index}">${value.username}</h3>
-        <h3 class="card-${index}">${value.email}</h3>`
-        content.appendChild(newCard);
-    })
-}
-
-const renderDataPosts = (data) => {
-    data.map((value, index) => {
-        const content = document.getElementById('cards');
-        const newCard = document.createElement('div');
-        newCard.className = 'card';
-        newCard.innerHTML =`
-        <h3 class="card-${index}">User Id: ${value.userId}</h3>
-        <h3 class="card-${index}">------Comment:-------${value.title}</h3>`
-        content.appendChild(newCard);
-    })
-}
-
-$('#allUsers').on('click',() => {
-    const requestHTTP = 'https://jsonplaceholder.typicode.com/users';
+$('#weather').on('click',() => {
+    const city = $('#search').val();
+    const requestHTTP = 'http://api.openweathermap.org/geo/1.0/direct?q='+ city +'&limit=1&appid=fc41099d3d362eb0a515e21884820e9e'
     $.ajax(requestHTTP, {
         method: 'GET',
         success: (data) => {
-            renderDataUsers(data);
-            },
-        error: (err) => {
-            alert('Фатальная Ошибка');
-            console.log(err);
-        }
-        });
-    });
-
-$('#error').on('click',() => {
-    const requestHTTP = 'https://jsonplaceh'; // https://jsonplaceholder.typicode.com/posts
-    $.ajax(requestHTTP, {
-        method: 'GET',
-        success: (data) => {
-            renderDataPosts(data);
+            let lat = data[0].lat;
+            let lon = data[0].lon;
+            const requestHTTPWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat +
+                '&lon='+ lon +'&appid=fc41099d3d362eb0a515e21884820e9e'
+            $requestHTTPWeather(requestHTTPWeather);
         },
         error: (err) => {
             alert('--------------------------Фатальная Ошибка---------------------------- ' +
@@ -55,4 +20,16 @@ $('#error').on('click',() => {
 });
 
 
-
+const $requestHTTPWeather = (requestHTTPWeather) => {
+    $.ajax(requestHTTPWeather, {
+        method: 'GET',
+        success: (dataWeather) => {
+            const temp = dataWeather.main.temp - 273.15;
+            console.log('temperature: ' + Math. round(temp));
+        },
+        error: (err) => {
+            alert('--------------------------Фатальная Ошибка---------------------------- ' +
+                'Для более подробной информации посмотрите в консоль');
+        }
+    });
+}
